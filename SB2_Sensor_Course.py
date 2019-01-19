@@ -12,16 +12,17 @@ curses.cbreak()
 screen.keypad(True)
 
 # Map Motor Controller pins to Pi GPIO pin number
-ENA = 11  # drive motor enable
-IN1 = 13  # forward
-IN2 = 15  # back
-IN3 = 16  # right
-IN4 = 18  # left
-ENB = 22  # steering motor enable
+
+ENA = 16  
+IN1 = 3
+IN2 = 5
+IN3 = 8
+IN4 = 10
+ENB = 18
 
 # Sensor pins to GPIO pin number
-TRIG = 24
-ECHO = 26
+TRIG = 11
+ECHO = 13
 
 # Set up the GPIOs of the car
 GPIO.setup(ENA,GPIO.OUT) 
@@ -41,21 +42,21 @@ print("press 'control'+'c' to stop")
 # Define each function
 def forward():
     GPIO.output(ENA,True)
-    GPIO.output(IN1,True)
-    GPIO.output(IN2,False)
-    GPIO.output(IN3,False)
+    GPIO.output(IN1,False)
+    GPIO.output(IN2,True)
+    GPIO.output(IN3,True)
     GPIO.output(IN4,False)
     GPIO.output(ENB,True)
 
 def back():
     GPIO.output(ENA,True)
-    GPIO.output(IN1,False)
-    GPIO.output(IN2,True)
+    GPIO.output(IN1,True)
+    GPIO.output(IN2,False)
     GPIO.output(IN3,False)
-    GPIO.output(IN4,False)
+    GPIO.output(IN4,True)
     GPIO.output(ENB,True)
 
-def rightF():
+def right():
     GPIO.output(ENA,True)
     GPIO.output(IN1,True)
     GPIO.output(IN2,False)
@@ -71,29 +72,14 @@ def stop():
     GPIO.output(IN3,False)
     GPIO.output(IN4,False)
 
-def leftF():
-    GPIO.output(ENA,True)
-    GPIO.output(IN1,True)
-    GPIO.output(IN2,False)
-    GPIO.output(IN3,False)
-    GPIO.output(IN4,True)
-    GPIO.output(ENB,True)
-
-def rightB():
-    GPIO.output(ENA,True)
-    GPIO.output(IN1,False)
-    GPIO.output(IN2,True)
-    GPIO.output(IN3,True)
-    GPIO.output(IN4,False)
-    GPIO.output(ENB,True)
-
-def leftB():
+def left():
     GPIO.output(ENA,True)
     GPIO.output(IN1,False)
     GPIO.output(IN2,True)
     GPIO.output(IN3,False)
     GPIO.output(IN4,True)
     GPIO.output(ENB,True)
+
 
 # Get the car running     
 try:
@@ -112,18 +98,16 @@ try:
                 end = time.time()
 
             sig_time = end-start
-            
+
             #cm:
             distance = sig_time / 0.000058      #inches: 0.000148
              #reads distance
-            print distance
             if distance < 20:      
-            # Set the directions
-                back()
-                time.sleep(3)  # Goes back for 3 seconds
-                rightF()
-                time.sleep(3)  # Goes right for 3 seconds
+            # Set the direction
+                right()
+                time.sleep(1)  # Goes right for 1 second
                 break  # Goes back to going forward
+            
 except KeyboardInterrupt:
     # Stop the car.
     # Control C to stop
